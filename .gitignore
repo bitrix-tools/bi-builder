@@ -1,0 +1,6 @@
+# SSL certificates
+ssl/
+
+# Local env overrides
+.env
+.idea/
