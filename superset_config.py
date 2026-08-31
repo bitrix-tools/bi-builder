@@ -1,3 +1,4 @@
+import importlib.util
 import logging
 import os
 
@@ -138,7 +139,7 @@ FEATURE_FLAGS = {
 }
 
 # ───────────────────────────────────────────────────────────────────
-# Branding / i18n
+# Branding / Localization
 # ───────────────────────────────────────────────────────────────────
 APP_NAME = os.getenv("APP_NAME", "BI Конструктор")
 APP_ICON = "/static/assets/images/bi-constructor-logo.svg"
@@ -157,6 +158,23 @@ CURRENCIES = ["RUB", "KZT", "USD", "EUR", "GBP", "JPY", "CNY", "INR", "MXN"]
 # ───────────────────────────────────────────────────────────────────
 log_level_text = os.getenv("SUPERSET_LOG_LEVEL", "INFO")
 LOG_LEVEL = getattr(logging, log_level_text.upper(), logging.INFO)
+
+
+# ───────────────────────────────────────────────────────────────────
+# Self-hosted mode
+# ───────────────────────────────────────────────────────────────────
+try:
+    license_guard_found = (
+        importlib.util.find_spec("superset.bitrix.license.request_guard") is not None
+    )
+except ModuleNotFoundError:
+    license_guard_found = False
+
+if not license_guard_found:
+    raise ImportError(
+        "This Superset image is outdated: pull or rebuild an image that contains the guard."
+    )
+
 
 # ───────────────────────────────────────────────────────────────────
 # Jinja context (portal_url helper)

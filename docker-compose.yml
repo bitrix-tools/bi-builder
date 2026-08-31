@@ -50,12 +50,12 @@ services:
         hard: ${NGINX_NOFILE_HARD:-2048}
     mem_limit: ${NGINX_MEM_LIMIT:-256m}
     cpus: ${NGINX_CPUS:-0.5}
-    # logging:
-    #   driver: "json-file"
-    #   options:
-    #     max-size: "256m"
-    #     max-file: "7"
-    #     compress: "true"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "${LOG_MAX_SIZE:-256m}"
+        max-file: "${LOG_MAX_FILE:-7}"
+        compress: "true"
     networks:
       - backend
       - frontend
@@ -86,12 +86,12 @@ services:
         hard: ${REDIS_NOFILE_HARD:-2048}
     mem_limit: ${REDIS_MEM_LIMIT:-256m}
     cpus: ${REDIS_CPUS:-0.5}
-    # logging:
-    #   driver: "json-file"
-    #   options:
-    #     max-size: "256m"
-    #     max-file: "7"
-    #     compress: "true"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "${LOG_MAX_SIZE:-256m}"
+        max-file: "${LOG_MAX_FILE:-7}"
+        compress: "true"
     networks:
       - backend
   mysql:
@@ -128,12 +128,12 @@ services:
         hard: ${DATABASE_NOFILE_HARD:-8192}
     mem_limit: ${DATABASE_MEM_LIMIT:-1g}
     cpus: ${DATABASE_CPUS:-1.0}
-    # logging:
-    #   driver: "json-file"
-    #   options:
-    #     max-size: "256m"
-    #     max-file: "7"
-    #     compress: "true"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "${LOG_MAX_SIZE:-256m}"
+        max-file: "${LOG_MAX_FILE:-7}"
+        compress: "true"
     networks:
       - backend
     healthcheck:
@@ -143,7 +143,7 @@ services:
       retries: 30
       start_period: 30s
   trino:
-    image: quay.io/bitrix24/trino:396-v1-alpine
+    image: quay.io/bitrix24/trino:478-v1-alpine
     container_name: bi_builder_trino
     restart: unless-stopped
     env_file:
@@ -170,19 +170,19 @@ services:
         hard: ${TRINO_NPROC_HARD:-8192}
     mem_limit: ${TRINO_MEM_LIMIT:-4g}
     cpus: ${TRINO_CPUS:-2.0}
-    # logging:
-    #   driver: "json-file"
-    #   options:
-    #     max-size: "256m"
-    #     max-file: "7"
-    #     compress: "true"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "${LOG_MAX_SIZE:-256m}"
+        max-file: "${LOG_MAX_FILE:-7}"
+        compress: "true"
     networks:
       - backend
       - frontend
     depends_on:
       - redis
   superset:
-    image: quay.io/bitrix24/superset:6.0.0-v600-debian
+    image: quay.io/bitrix24/superset:6.0.0-v900-debian
     # superset-init, superset-worker, superset-worker-beat
     container_name: bi_builder_superset
     command: ["/usr/bin/run-server.sh"]
@@ -215,12 +215,12 @@ services:
         hard: ${SUPERSET_NOFILE_HARD:-2048}
     mem_limit: ${SUPERSET_MEM_LIMIT:-2g}
     cpus: ${SUPERSET_CPUS:-1.0}
-    # logging:
-    #   driver: "json-file"
-    #   options:
-    #     max-size: "256m"
-    #     max-file: "7"
-    #     compress: "true"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "${LOG_MAX_SIZE:-256m}"
+        max-file: "${LOG_MAX_FILE:-7}"
+        compress: "true"
     networks:
       backend:
       frontend:
@@ -230,7 +230,7 @@ services:
       superset-init:
         condition: service_completed_successfully
   superset-init:
-    image: quay.io/bitrix24/superset:6.0.0-v600-debian
+    image: quay.io/bitrix24/superset:6.0.0-v900-debian
     container_name: bi_builder_superset_init
     command: [ "/bin/bash", "/app/docker/docker-init.sh" ]
     volumes:
@@ -259,12 +259,12 @@ services:
         hard: ${SUPERSET_NOFILE_HARD:-2048}
     mem_limit: ${SUPERSET_MEM_LIMIT:-2g}
     cpus: ${SUPERSET_CPUS:-1.0}
-    # logging:
-    #   driver: "json-file"
-    #   options:
-    #     max-size: "256m"
-    #     max-file: "7"
-    #     compress: "true"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "${LOG_MAX_SIZE:-256m}"
+        max-file: "${LOG_MAX_FILE:-7}"
+        compress: "true"
     networks:
       - backend
     depends_on:
@@ -277,7 +277,7 @@ services:
     healthcheck:
       disable: true
   superset-worker:
-    image: quay.io/bitrix24/superset:6.0.0-v600-debian
+    image: quay.io/bitrix24/superset:6.0.0-v900-debian
     container_name: bi_builder_superset_worker
     command: ["celery", "--app=superset.tasks.celery_app:app", "worker", "-O", "fair", "-l", "INFO", "--concurrency=2"]
     restart: unless-stopped
@@ -307,12 +307,12 @@ services:
         hard: ${SUPERSET_NOFILE_HARD:-2048}
     mem_limit: ${SUPERSET_MEM_LIMIT:-2g}
     cpus: ${SUPERSET_CPUS:-1.0}
-    # logging:
-    #   driver: "json-file"
-    #   options:
-    #     max-size: "256m"
-    #     max-file: "7"
-    #     compress: "true"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "${LOG_MAX_SIZE:-256m}"
+        max-file: "${LOG_MAX_FILE:-7}"
+        compress: "true"
     networks:
       - backend
     depends_on:
@@ -321,7 +321,7 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "celery -A superset.tasks.celery_app:app inspect ping -d celery@$$HOSTNAME"]
   superset-worker-beat:
-    image: quay.io/bitrix24/superset:6.0.0-v600-debian
+    image: quay.io/bitrix24/superset:6.0.0-v900-debian
     container_name: bi_builder_superset_beat
     command: ["celery", "--app=superset.tasks.celery_app:app", "beat", "--pidfile", "/tmp/celerybeat.pid", "-l", "INFO", "-s", "/app/superset_home/celerybeat-schedule"]
     restart: unless-stopped
@@ -351,12 +351,12 @@ services:
         hard: ${SUPERSET_NOFILE_HARD:-2048}
     mem_limit: ${SUPERSET_MEM_LIMIT:-2g}
     cpus: ${SUPERSET_CPUS:-1.0}
-    # logging:
-    #   driver: "json-file"
-    #   options:
-    #     max-size: "256m"
-    #     max-file: "7"
-    #     compress: "true"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "${LOG_MAX_SIZE:-256m}"
+        max-file: "${LOG_MAX_FILE:-7}"
+        compress: "true"
     networks:
       - backend
     depends_on:

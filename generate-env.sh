@@ -84,6 +84,7 @@ sedi "s|TRINO_CLIENT_KEY=CHANGE_TRINO_CLIENT_KEY|TRINO_CLIENT_KEY=$(gen 32)|" "$
 sedi "s|TRINO_PASS=CHANGE_TRINO_ADMIN_PASS|TRINO_PASS=$(gen 32)|" "$ENV_FILE"
 sedi "s|TRINO_INTERNAL_SECRET=CHANGE_TRINO_INTERNAL_SECRET|TRINO_INTERNAL_SECRET=$(gen 40)|" "$ENV_FILE"
 sedi "s|SYMMETRIC_CRYPTO_KEY=.*|SYMMETRIC_CRYPTO_KEY=$(dd if=/dev/urandom bs=32 count=1 2>/dev/null | base64 | tr '+/' '-_')|" "$ENV_FILE"
+sedi "s|^BX_SELF_HOSTED_INSTANCE=.*|BX_SELF_HOSTED_INSTANCE=Y|" "$ENV_FILE"
 
 echo ""
 echo "File $ENV_FILE was successfully created."

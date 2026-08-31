@@ -4,3 +4,6 @@ ssl/
 # Local env overrides
 .env
 .idea/
+
+# Python bytecode of the delivery config
+__pycache__/
