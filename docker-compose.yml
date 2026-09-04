@@ -62,7 +62,7 @@ services:
     depends_on:
       - superset
   redis:
-    image: redis:8.2.7-alpine
+    image: redis:8.2.9-alpine
     container_name: bi_builder_redis
     restart: unless-stopped
     volumes:
@@ -95,7 +95,7 @@ services:
     networks:
       - backend
   mysql:
-    image: mysql:8.4.10-oracle
+    image: mysql:8.4.11-oracle
     container_name: bi_builder_mysql
     restart: unless-stopped
     volumes:
