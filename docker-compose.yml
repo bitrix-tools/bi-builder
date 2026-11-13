@@ -18,7 +18,7 @@ volumes:
 
 services:
   nginx:
-    image: nginx:1.30.4-alpine
+    image: nginx:1.30.6-alpine
     container_name: bi_builder_nginx
     restart: unless-stopped
     ports:
@@ -62,7 +62,7 @@ services:
     depends_on:
       - superset
   redis:
-    image: redis:8.2.9-alpine
+    image: redis:8.2.11-alpine
     container_name: bi_builder_redis
     restart: unless-stopped
     volumes:
@@ -95,7 +95,7 @@ services:
     networks:
       - backend
   mysql:
-    image: mysql:8.4.11-oracle
+    image: mysql:8.4.13-oracle
     container_name: bi_builder_mysql
     restart: unless-stopped
     volumes:
