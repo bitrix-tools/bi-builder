@@ -81,6 +81,10 @@ DATA_CACHE_CONFIG = {
 # ───────────────────────────────────────────────────────────────────
 # Celery
 # ───────────────────────────────────────────────────────────────────
+# Action log (logs) and SQL Lab history (query) records older than this are pruned nightly
+METADATA_RETENTION_DAYS = int(os.getenv("SUPERSET_METADATA_RETENTION_DAYS", "90"))
+
+
 class CeleryConfig:
     broker_url = f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}"
     imports = (
@@ -105,6 +109,16 @@ class CeleryConfig:
         "reports.prune_log": {
             "task": "reports.prune_log",
             "schedule": crontab(minute=10, hour=0),
+        },
+        "prune_logs": {
+            "task": "prune_logs",
+            "schedule": crontab(minute=0, hour=1),
+            "kwargs": {"retention_period_days": METADATA_RETENTION_DAYS},
+        },
+        "prune_query": {
+            "task": "prune_query",
+            "schedule": crontab(minute=30, hour=1),
+            "kwargs": {"retention_period_days": METADATA_RETENTION_DAYS},
         },
     }
 
